@@ -7,7 +7,9 @@ const Product = require("./models/product");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.get("/test", (req,res)=>{
+  res.send("Render deployment working");
+});
 
 // HOME PAGE (HTML view)
 app.get("/", async (req, res) => {
