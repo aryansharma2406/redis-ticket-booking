@@ -12,5 +12,9 @@ app.use("/api", bookingRoutes);
 app.get("/", (req, res) => {
     res.send("Ticket Booking System API Running");
 });
+app.get("/api/book/:seatId", async (req, res) => {
+  const seatId = req.params.seatId;
+  res.send(`Demo endpoint working. Use POST to book seat ${seatId}`);
+});
 
 export default app;
