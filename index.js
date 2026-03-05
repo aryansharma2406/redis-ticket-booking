@@ -8,62 +8,57 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 
-// Home route
+// HOME PAGE (HTML view)
 app.get("/", async (req, res) => {
   try {
     const products = await Product.find();
 
-    let html = `
-    <h1>Ecommerce Catalog</h1>
-    <h2>Products List</h2>
-    `;
+    let html = `<h1>Ecommerce Catalog</h1>`;
 
-    products.forEach(product => {
+    products.forEach(p => {
       html += `
       <div style="border:1px solid #ccc;padding:10px;margin:10px">
-        <h3>${product.name}</h3>
-        <p><b>Category:</b> ${product.category}</p>
-        <p><b>Average Rating:</b> ${product.avgRating}</p>
+        <h2>${p.name}</h2>
+        <p><b>Category:</b> ${p.category}</p>
+        <p><b>Avg Rating:</b> ${p.avgRating}</p>
 
-        <h4>Variants</h4>
+        <h3>Variants</h3>
         <ul>
       `;
 
-      product.variants.forEach(v => {
+      p.variants.forEach(v => {
         html += `
         <li>
-        SKU: ${v.sku} | Color: ${v.color} | Price: $${v.price} | Stock: ${v.stock}
+        ${v.color} | SKU: ${v.sku} | Price: $${v.price} | Stock: ${v.stock}
         </li>
         `;
       });
 
-      html += `</ul>`;
+      html += "</ul><h3>Reviews</h3><ul>";
 
-      html += `<h4>Reviews</h4><ul>`;
-
-      product.reviews.forEach(r => {
-        html += `
-        <li>
-        Rating: ${r.rating} ⭐ - ${r.comment}
-        </li>
-        `;
+      p.reviews.forEach(r => {
+        html += `<li>${r.rating}⭐ - ${r.comment}</li>`;
       });
 
-      html += `</ul></div>`;
+      html += "</ul></div>";
     });
 
     res.send(html);
 
-  } catch (error) {
-    res.send(error.message);
+  } catch (err) {
+    res.send(err.message);
   }
 });
 
 
-// API route (optional)
+// API ROUTE (JSON)
 app.get("/api/products", async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.json({ error: err.message });
+  }
 });
 
 
